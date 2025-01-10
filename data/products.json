@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "KAIGERR Gaming Laptop",
+    "description": "ntel Quad-Core Processor(Up to 3.6GHz), 16GB DDR4 512GB SSD, Windows 11 Laptop, 15.6' IPS 1080P",
+    "price": 1499.99,
+    "image": "https://m.media-amazon.com/images/I/61j3uzJvVLL._AC_SL1500_.jpg"
+  },
+  {
+    "id": 2,
+    "name": "HP Ultral Light Laptop",
+    "description": "Intel Quad-Core, 8GB RAM, 192GB Storage(64GB eMMC+128GB Ghost Manta SD Card)",
+    "price": 121.00,
+    "image": "https://m.media-amazon.com/images/I/81divYKpeTL._AC_SL1500_.jpg"
+  },
+  {
+    "id": 3,
+    "name": "ApoloSign Laptop",
+    "description": "12GB RAM, 512GB SSD, Expandable to 1TB, Intel N5095 Processor, Dual-Band WiFi, 178° Viewing Angle",
+    "price": 289.99,
+    "image": "https://m.media-amazon.com/images/I/71yFp1LYUGL._AC_SL1500_.jpg"
+  }
+]
