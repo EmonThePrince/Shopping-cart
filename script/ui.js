@@ -103,6 +103,8 @@ function attachCartEventListeners() {
   });
 }
 
+let appliedPromoCode = null;
+
 function showCheckoutModal() {
   const modal = document.createElement('div');
   modal.className = 'checkout-modal';
@@ -122,6 +124,16 @@ function showCheckoutModal() {
           <label for="address">Shipping Address</label>
           <textarea id="address" required></textarea>
         </div>
+        <div class="form-group">
+          <label for="promo-code">Promo Code</label>
+          <input type="text" id="promo-code">
+          <button type="button" id="apply-promo">Apply</button>
+        </div>
+        <div id="discount-summary">
+          <p>Subtotal: $<span id="subtotal">0.00</span></p>
+          <p>Discount: -$<span id="discount">0.00</span></p>
+          <p><strong>Total: $<span id="final-total">0.00</span></strong></p>
+        </div>
         <button type="submit">Complete Order</button>
         <button type="button" class="cancel-checkout">Cancel</button>
       </form>
@@ -129,51 +141,78 @@ function showCheckoutModal() {
   `;
 
   document.body.appendChild(modal);
-  
+
   const form = modal.querySelector('#checkout-form');
   const cancelButton = modal.querySelector('.cancel-checkout');
+  const applyPromoButton = modal.querySelector('#apply-promo');
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const total = calculateTotal(productsCache);
+    const total = calculateDiscountedTotal();
     
-    // Show success message
     modal.remove();
     showOrderConfirmation(total);
-    
-    // Clear cart
+
     clearCart();
+    appliedPromoCode = null; // Reset promo code after successful checkout
     updateCartUI();
+  });
+
+  applyPromoButton.addEventListener('click', () => {
+    const promoCodeInput = modal.querySelector('#promo-code');
+    const promoCode = promoCodeInput.value.trim().toLowerCase();
+    applyPromoCode(promoCode);
+    updateCheckoutSummary();
   });
 
   cancelButton.addEventListener('click', () => modal.remove());
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.remove();
   });
+
+  updateCheckoutSummary();
 }
 
-function showOrderConfirmation(total) {
-  const confirmationModal = document.createElement('div');
-  confirmationModal.className = 'checkout-modal';
-  confirmationModal.innerHTML = `
-    <div class="checkout-content">
-      <h2>Order Confirmed!</h2>
-      <p>Thank you for your purchase.</p>
-      <p>Total amount: $${total.toFixed(2)}</p>
-      <button onclick="this.closest('.checkout-modal').remove()">Close</button>
-    </div>
-  `;
-  document.body.appendChild(confirmationModal);
+function calculateDiscountedTotal() {
+  const subtotal = calculateTotal(productsCache);
+  let discount = 0;
+
+  if (appliedPromoCode === 'ostad10') discount = subtotal * 0.10;
+  if (appliedPromoCode === 'ostad5') discount = subtotal * 0.05;
+
+  return subtotal - discount;
+}
+
+function applyPromoCode(promoCode) {
+  if (appliedPromoCode) {
+    showError('Promo code already applied');
+    return;
+  }
+
+  if (promoCode === 'ostad10' || promoCode === 'ostad5') {
+    appliedPromoCode = promoCode;
+    showSuccess(`Promo code "${promoCode}" applied successfully`);
+  } else {
+    showError('Invalid promo code');
+  }
+}
+
+function updateCheckoutSummary() {
+  const subtotal = calculateTotal(productsCache);
+  const total = calculateDiscountedTotal();
+  const discount = subtotal - total;
+
+  document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+  document.getElementById('discount').textContent = discount.toFixed(2);
+  document.getElementById('final-total').textContent = total.toFixed(2);
 }
 
 function showSuccess(message) {
-  // You can implement a toast notification here
-  alert(message);
+  alert(message); 
 }
 
 function showError(message) {
-  // You can implement a toast notification here
-  alert(message);
+  alert(message); 
 }
 
 // Initialize
@@ -195,3 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
     showCheckoutModal();
   });
 });
+
+
+
+
+
